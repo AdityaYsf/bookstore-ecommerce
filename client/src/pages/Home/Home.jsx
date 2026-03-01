@@ -8,6 +8,7 @@ import BookCard from '../../components/Books/BookCard'
 import api from '../../services/api'
 import HeroMain from './components/hero-books.png'
 import HeroSec from './components/hero-books-2.png'
+import { useAuth } from '../../context/AuthContext' // ← import auth context
 
 /* ─────────────────────────────────────────
    STYLES
@@ -16,31 +17,22 @@ const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap');
 
   :root {
-    /* Light backgrounds */
     --bg-page:   #f5f7ff;
     --bg-card:   #ffffff;
     --bg-soft:   #eef1fb;
     --bg-mid:    #e4e9f7;
-
-    /* Navy (for hero, accents, text) */
     --navy:      #0f1e42;
     --navy-mid:  #1a2f5e;
     --navy-lt:   #253a6e;
     --navy-pale: #dde4f5;
-
-    /* Copper */
     --copper:      #d4823a;
     --copper-dk:   #b06828;
     --copper-lt:   #e89a58;
     --copper-pale: #fdecd8;
-
-    /* Text */
     --ink:    #0f1e42;
     --ink-2:  #3a4a6e;
     --ink-3:  #6272a0;
     --ink-4:  #9aa3c2;
-
-    /* Borders */
     --bdr:     rgba(15,30,66,0.1);
     --bdr-lt:  rgba(15,30,66,0.06);
   }
@@ -193,7 +185,6 @@ const styles = `
   .hs-num em { color: var(--copper-lt); font-style: normal; font-size: 0.95rem; }
   .hs-lbl { font-size: 0.68rem; font-weight: 500; color: rgba(200,215,255,0.55); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 0.2rem; }
 
-  /* Hero visual */
   .hero-right {
     display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: auto auto;
     gap: 12px;
@@ -471,6 +462,7 @@ function useReveal() {
 const Home = () => {
   const [books, setBooks] = useState([])
   const [cats,  setCats]  = useState([])
+  const { user } = useAuth() // ← cek status login
   useReveal()
 
   useEffect(() => {
@@ -488,7 +480,7 @@ const Home = () => {
         🎉 Promo Spesial — Diskon hingga <strong>35%</strong> untuk koleksi buku pilihan! Gratis ongkir min. pembelian Rp 100.000
       </div>
 
-      {/* HERO — tetap navy gelap supaya kontras & impactful */}
+      {/* HERO */}
       <section className="hero">
         <div className="hero-inner">
           <div>
@@ -502,7 +494,8 @@ const Home = () => {
             </p>
             <div className="hero-ctas">
               <Link to="/books" className="btn-copper">Jelajahi Katalog <ArrowRight size={15} /></Link>
-              <Link to="/register" className="btn-ghost-w">Daftar Gratis</Link>
+              {/* Tombol Daftar hanya muncul jika belum login */}
+              {!user && <Link to="/register" className="btn-ghost-w">Daftar Gratis</Link>}
             </div>
             <div className="hero-stats">
               {[['10K','+','Judul Buku'],['50K','+','Pembaca'],['4.9','★','Rating']].map(([n,s,l]) => (
@@ -626,19 +619,21 @@ const Home = () => {
         </div>
       </section>
 
-      {/* CTA FOOTER */}
-      <section className="cta-foot">
-        <div className="cf-eyebrow">Bergabung Sekarang</div>
-        <h2 className="cf-ttl">Belum punya akun? Daftar gratis sekarang!</h2>
-        <p className="cf-sub">
-          Nikmati akses ke ribuan judul buku, promo eksklusif member,
-          dan pengalaman belanja buku terbaik di Indonesia.
-        </p>
-        <div className="cf-actions">
-          <Link to="/register" className="btn-copper">Daftar Gratis <ArrowRight size={14} /></Link>
-          <Link to="/books" className="btn-ghost-w">Lihat Katalog</Link>
-        </div>
-      </section>
+      {/* CTA FOOTER — hanya tampil jika belum login */}
+      {!user && (
+        <section className="cta-foot">
+          <div className="cf-eyebrow">Bergabung Sekarang</div>
+          <h2 className="cf-ttl">Belum punya akun? Daftar gratis sekarang!</h2>
+          <p className="cf-sub">
+            Nikmati akses ke ribuan judul buku, promo eksklusif member,
+            dan pengalaman belanja buku terbaik di Indonesia.
+          </p>
+          <div className="cf-actions">
+            <Link to="/register" className="btn-copper">Daftar Gratis <ArrowRight size={14} /></Link>
+            <Link to="/books" className="btn-ghost-w">Lihat Katalog</Link>
+          </div>
+        </section>
+      )}
     </div>
   )
 }
