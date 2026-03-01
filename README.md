@@ -1,6 +1,4 @@
 <div align="center">
-  <img src="https://vitejs.dev/logo.svg" alt="Vite" width="60" />
-  &nbsp;&nbsp;&nbsp;
   <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/react/react-original.svg" alt="React" width="60" />
 </div>
 
